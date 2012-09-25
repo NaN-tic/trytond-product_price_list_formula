@@ -1,0 +1,7 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:product.price_list:"
+msgid "Not found price list: %s!"
+msgstr "No se encuentra la tarifa: %s"
