@@ -2,7 +2,6 @@ trytond_product_price_list_formula
 ==================================
 
 The product_price_list_formula module of the Tryton application platform.
-See __tryton__.py
 
 Installing
 ----------

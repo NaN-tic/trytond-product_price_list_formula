@@ -5,16 +5,20 @@
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.tools import safe_eval, datetime_strftime
 from trytond.transaction import Transaction
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
 
 from decimal import Decimal
 
-class PriceList(ModelSQL, ModelView):
-    _name = 'product.price_list'
+__all__ = ['PriceList', 'PriceListLine']
+__metaclass__ = PoolMeta
 
-    def __init__(self):
-        super(PriceList, self).__init__()
-        self._error_messages.update({
+class PriceList:
+    __name__ = 'product.price_list'
+
+    @classmethod
+    def __setup__(cls):
+        super(PriceList, cls).__setup__()
+        cls._error_messages.update({
             'not_found_price_list': 'Not found price list: %s!',
         })
 
@@ -39,6 +43,7 @@ class PriceList(ModelSQL, ModelView):
         res['price_list'] = Pool().get('product.price_list')
         return res
 
+    @classmethod
     def compute_price_list(self, price_list):
         '''
         Compute price based another price list
@@ -48,7 +53,7 @@ class PriceList(ModelSQL, ModelView):
         :return: the computed unit price
         '''
         if isinstance(price_list, (int, long)):
-            price_list = self.browse(price_list)
+            price_list = self(price_list)
 
         try:
             price_list.name
@@ -57,47 +62,41 @@ class PriceList(ModelSQL, ModelView):
 
         quantity=0
         product = Transaction().context['product']
-
-        res = self.compute(
+        return self.compute(
                         price_list,
                         Transaction().context['customer'],
                         product, 
                         Transaction().context['unit_price'],
                         quantity,
                         Transaction().context.get('uom', product.default_uom))
-        return res
 
-PriceList()
 
-class PriceListLine(ModelSQL, ModelView):
+class PriceListLine:
     'Price List Line'
-    _name = 'product.price_list.line'
+    __name__ = 'product.price_list.line'
 
-    def check_formula(self, ids):
+    def check_formula(self):
         '''
         Check formula
         Add new params test in context: product, customer and price list object
         '''
-        price_list_obj = Pool().get('product.price_list')
-        context = price_list_obj._get_context_price_list_line(None, None,
+        pool = Pool()
+        PriceList = pool.get('product.price_list')
+        context = PriceList()._get_context_price_list_line(None, None,
                 Decimal('0.0'), 0, None)
 
-        product = Pool().get('product.product').search([
+        product = pool.get('product.product').search([
             ('salable', '=', True),
             ], 0, 1, None)[0]
-        context['product'] =  Pool().get('product.product').browse(product)
-        customer = Pool().get('party.party').search([], 0, 1, None)[0]
-        context['customer'] = Pool().get('party.party').browse(customer)
-        context['price_list'] = Pool().get('product.price_list')
+        context['product'] =  pool.get('product.product')(product)
+        customer = pool.get('party.party').search([], 0, 1, None)[0]
+        context['customer'] = pool.get('party.party')(customer)
+        context['price_list'] = pool.get('product.price_list')
 
-        lines = self.browse(ids)
         with Transaction().set_context(**context):
-            for line in lines:
-                try:
-                    if not isinstance(self.get_unit_price(line), Decimal):
-                        return False
-                except Exception:
+            try:
+                if not isinstance(self.get_unit_price(), Decimal):
                     return False
+            except Exception:
+                return False
         return True
-
-PriceListLine()
