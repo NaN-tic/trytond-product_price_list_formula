@@ -86,7 +86,6 @@ class PriceListLine:
                 Decimal('0.0'), 0, None)
 
         product = pool.get('product.product').search([
-            ('salable', '=', True),
             ], 0, 1, None)[0]
         context['product'] =  pool.get('product.product')(product)
         customer = pool.get('party.party').search([], 0, 1, None)[0]
