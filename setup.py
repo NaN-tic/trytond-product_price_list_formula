@@ -33,14 +33,14 @@ setup(name='trytonzz_product_price_list_formula',
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='http://www.zikzakmedia.com',
-    download_url="https://bitbucket.org/zikzakmedia/trytonzz-product_price_list_formula",
-    package_dir={'trytonzz.modules.product_price_list_formula': '.'},
+    download_url="https://bitbucket.org/zikzakmedia/trytond-product_price_list_formula",
+    package_dir={'trytond.modules.product_price_list_formula': '.'},
     packages=[
-        'trytonzz.modules.product_price_list_formula',
-        'trytonzz.modules.product_price_list_formula.tests',
+        'trytond.modules.product_price_list_formula',
+        'trytond.modules.product_price_list_formula.tests',
     ],
     package_data={
-        'trytonzz.modules.product_price_list_formula': info.get('xml', []) \
+        'trytond.modules.product_price_list_formula': info.get('xml', []) \
                 + info.get('translation', []) \
                 + ['icons/*.svg'],
     },
@@ -64,9 +64,9 @@ setup(name='trytonzz_product_price_list_formula',
     install_requires=requires,
     zip_safe=False,
     entry_points="""
-    [trytonzz.modules]
-    product_price_list_formula = trytonzz.modules.product_price_list_formula
+    [trytond.modules]
+    product_price_list_formula = trytond.modules.product_price_list_formula
     """,
     test_suite='tests',
-    test_loader='trytonzz.test_loader:Loader',
+    test_loader='trytond.test_loader:Loader',
 )
