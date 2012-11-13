@@ -4,5 +4,6 @@ include TODO
 include CHANGELOG
 include COPYRIGHT
 include LICENSE
+include tryton.cfg
 include locale/*.po
 include doc/*
