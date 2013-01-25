@@ -45,17 +45,17 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         '''
         with Transaction().start(DB_NAME, USER,
                 context=CONTEXT) as transaction:
-            currency1 = self.currency.create({
+            currency1 = self.currency.create([{
                 'name': 'Currency',
                 'symbol': 'C',
                 'code': 'CUR'
-                })
+                }])[0]
             self.assert_(currency1)
 
-            company1 = self.company.create({
+            company1 = self.company.create([{
                 'name': 'Zikzakmedia',
                 'currency': currency1,
-                })
+                }])[0]
             self.assert_(company1)
 
             transaction.cursor.commit()
@@ -66,20 +66,20 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         '''
         with Transaction().start(DB_NAME, USER, context=CONTEXT) as transaction:
             Category = POOL.get('product.category')
-            category = Category.create({'name': 'Toys'})
+            category = Category.create([{'name': 'Toys'}])[0]
             self.assert_(category)
 
             uom, = self.uom.search([
                     ('name', '=', 'Unit'),
                     ])
-            product = self.product.create({
+            product = self.product.create([{
                     'name': 'Carrier',
                     'default_uom': uom.id,
                     'category': category.id,
                     'type': 'service',
                     'list_price': Decimal(0),
                     'cost_price': Decimal(0),
-                    })
+                    }])[0]
             self.assert_(product)
             transaction.cursor.commit()
 
@@ -90,15 +90,15 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         with Transaction().start(DB_NAME, USER, context=CONTEXT) as transaction:
             company1 = self.currency.search([], 0, 1, None)[0]
             with transaction.set_user(0):
-                price_list1 = self.price_list.create({
+                price_list1 = self.price_list.create([{
                     'name': 'General Price List',
                     'company': company1.id,
                     'lines': [
-                        ('create', {
+                        ('create', [{
                             'formula': 'product.cost_price*1.10',
-                            },
+                            }],
                         ),],
-                    })
+                    }])[0]
 
                 self.assert_(price_list1)
 
