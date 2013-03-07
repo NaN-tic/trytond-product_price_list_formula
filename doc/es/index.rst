@@ -29,8 +29,8 @@ Ejemplo de cálculos:
   exista esta tarifa, un mensaje de aviso le informará que la tarifa no se
   encuentra por lo que deberá usar un identificador válido.
 
-Módulos que dependen
-====================
+Módulos de los que depende
+==========================
 
 Instalados
 ----------
