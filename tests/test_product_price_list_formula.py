@@ -19,7 +19,7 @@ from decimal import Decimal
 
 class ProductPriceListFormulaTestCase(unittest.TestCase):
     '''
-    Test Helloword module.
+    Test Product PriceList Formula module.
     '''
 
     def setUp(self):
