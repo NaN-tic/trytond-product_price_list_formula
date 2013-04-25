@@ -11,6 +11,8 @@ if os.path.isdir(DIR):
     sys.path.insert(0, os.path.dirname(DIR))
 
 import unittest
+from decimal import Decimal
+
 import trytond.tests.test_tryton
 from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT, test_view,\
     test_depends
@@ -19,85 +21,59 @@ from decimal import Decimal
 
 class ProductPriceListFormulaTestCase(unittest.TestCase):
     '''
-    Test Product PriceList Formula module.
+    Test Product Price List Formula module.
     '''
 
     def setUp(self):
         trytond.tests.test_tryton.install_module('sale_price_list')
         trytond.tests.test_tryton.install_module('product_price_list_formula')
-        self.company = POOL.get('company.company')
-        self.currency = POOL.get('currency.currency')
-        self.category = POOL.get('product.category')
-        self.uom = POOL.get('product.uom')
-        self.product = POOL.get('product.product')
         self.price_list = POOL.get('product.price_list')
-        self.price_list_line = POOL.get('product.price_list.line')
-
+        self.company = POOL.get('company.company')
+        self.uom = POOL.get('product.uom')
+        self.category = POOL.get('product.category')
+        self.template = POOL.get('product.template')
+        self.product = POOL.get('product.product')
+    
     def test0006depends(self):
         '''
         Test depends.
         '''
         test_depends()
 
-    def test0010company(self):
+    def test0010price_list(self):
         '''
-        Create currency and company.
-        '''
-        with Transaction().start(DB_NAME, USER,
-                context=CONTEXT) as transaction:
-            currency1 = self.currency.create([{
-                'name': 'Currency',
-                'symbol': 'C',
-                'code': 'CUR'
-                }])[0]
-            self.assert_(currency1)
-
-            company1 = self.company.create([{
-                'name': 'Zikzakmedia',
-                'currency': currency1,
-                }])[0]
-            self.assert_(company1)
-
-            transaction.cursor.commit()
-
-    def test0020product(self):
-        '''
-        Create Product
+        Create Price List
         '''
         with Transaction().start(DB_NAME, USER, context=CONTEXT) as transaction:
-            Category = POOL.get('product.category')
-            category = Category.create([{'name': 'Toys'}])[0]
-            self.assert_(category)
+            company, = self.company.search([('rec_name', '=', 'B2CK')])
 
             uom, = self.uom.search([
                     ('name', '=', 'Unit'),
                     ])
-            product = self.product.create([{
+            category, = self.category.create([{
+                    'name': 'Category',
+                    }])
+            template, = self.template.create([{
                     'name': 'Carrier',
                     'default_uom': uom.id,
                     'category': category.id,
                     'type': 'service',
                     'list_price': Decimal(0),
                     'cost_price': Decimal(0),
-                    }])[0]
-            self.assert_(product)
-            transaction.cursor.commit()
+                    }])
+            product, = self.product.create([{
+                    'template': template.id,
+                    }])
 
-    def test0030price_list(self):
-        '''
-        Create Price List
-        '''
-        with Transaction().start(DB_NAME, USER, context=CONTEXT) as transaction:
-            company1 = self.currency.search([], 0, 1, None)[0]
             with transaction.set_user(0):
                 price_list1 = self.price_list.create([{
                     'name': 'General Price List',
-                    'company': company1.id,
+                    'company': company.id,
                     'lines': [
                         ('create', [{
                             'formula': 'product.cost_price*1.10',
-                            }],
-                        ),],
+                        }],
+                    ),],
                     }])[0]
 
                 self.assert_(price_list1)
@@ -106,6 +82,10 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
  
 def suite():
     suite = trytond.tests.test_tryton.suite()
+    from trytond.modules.company.tests import test_company
+    for test in test_company.suite():
+        if test not in suite:
+            suite.addTest(test)
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(
         ProductPriceListFormulaTestCase))
     return suite
