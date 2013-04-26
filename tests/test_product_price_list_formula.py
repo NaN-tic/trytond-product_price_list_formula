@@ -16,7 +16,7 @@ from decimal import Decimal
 import trytond.tests.test_tryton
 from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT, test_depends
 from trytond.transaction import Transaction
-from decimal import Decimal
+
 
 class ProductPriceListFormulaTestCase(unittest.TestCase):
     '''
