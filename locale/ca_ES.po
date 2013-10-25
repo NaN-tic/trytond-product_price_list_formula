@@ -2,6 +2,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
+msgctxt "error:product.price_list.line:"
+msgid "Add a product before to create a price list"
+msgstr "Afegeix un producte abans de crear una tarifa de preus"
+
 msgctxt "error:product.price_list:"
 msgid "Not found price list: %s!"
 msgstr "No es troba la tarifa: %s"
