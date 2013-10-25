@@ -72,6 +72,13 @@ class PriceListLine:
     'Price List Line'
     __name__ = 'product.price_list.line'
 
+    @classmethod
+    def __setup__(cls):
+        super(PriceListLine, cls).__setup__()
+        cls._error_messages.update({
+                'add_product': ('Add a product before to create a price list'),
+                })
+
     def check_formula(self):
         '''
         Check formula
@@ -82,10 +89,12 @@ class PriceListLine:
         context = PriceList()._get_context_price_list_line(None, None,
                 Decimal('0.0'), 0, None)
 
-        product = pool.get('product.product').search([
-            ], 0, 1, None)[0]
+        products = pool.get('product.product').search([], limit=1)
+        if not products:
+            self.raise_user_error('add_product')
+        product = products[0]
         context['product'] =  pool.get('product.product')(product)
-        customer = pool.get('party.party').search([], 0, 1, None)[0]
+        customer = pool.get('party.party').search([], limit=1)[0]
         context['customer'] = pool.get('party.party')(customer)
         context['price_list'] = pool.get('product.price_list')
 
