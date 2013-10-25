@@ -9,6 +9,7 @@ from decimal import Decimal
 __all__ = ['PriceList', 'PriceListLine']
 __metaclass__ = PoolMeta
 
+
 class PriceList:
     __name__ = 'product.price_list'
 
@@ -69,7 +70,6 @@ class PriceList:
 
 
 class PriceListLine:
-    'Price List Line'
     __name__ = 'product.price_list.line'
 
     @classmethod

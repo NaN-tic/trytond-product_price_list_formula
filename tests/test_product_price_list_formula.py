@@ -78,7 +78,8 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
                 self.assert_(price_list1)
 
             transaction.cursor.commit()
- 
+
+
 def suite():
     suite = trytond.tests.test_tryton.suite()
     from trytond.modules.company.tests import test_company
@@ -88,6 +89,7 @@ def suite():
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(
         ProductPriceListFormulaTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner(verbosity=2).run(suite())
