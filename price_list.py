@@ -101,7 +101,13 @@ class PriceListLine:
         with Transaction().set_context(**context):
             try:
                 if not isinstance(self.get_unit_price(), Decimal):
-                    return False
+                    self.raise_user_error('invalid_formula', {
+                            'formula': self.formula,
+                            'line': self.rec_name,
+                            })
             except Exception:
-                return False
+                self.raise_user_error('invalid_formula', {
+                        'formula': self.formula,
+                        'line': self.rec_name,
+                        })
         return True
