@@ -1,5 +1,5 @@
 #This file is part product_price_list_formula module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains 
+#The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
@@ -58,12 +58,12 @@ class PriceList:
         except:
             self.raise_user_error('not_found_price_list', price_list)
 
-        quantity=0
+        quantity = 0
         product = Transaction().context['product']
         return self.compute(
                         price_list,
                         Transaction().context['customer'],
-                        product, 
+                        product,
                         Transaction().context['unit_price'],
                         quantity,
                         Transaction().context.get('uom', product.default_uom))
@@ -93,7 +93,7 @@ class PriceListLine:
         if not products:
             self.raise_user_error('add_product')
         product = products[0]
-        context['product'] =  pool.get('product.product')(product)
+        context['product'] = pool.get('product.product')(product)
         customer = pool.get('party.party').search([], limit=1)[0]
         context['customer'] = pool.get('party.party')(customer)
         context['price_list'] = pool.get('product.price_list')

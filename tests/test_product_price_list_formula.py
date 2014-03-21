@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #This file is part product_price_list_formula module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains 
+#The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 
 import sys
@@ -32,7 +32,7 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         self.category = POOL.get('product.category')
         self.template = POOL.get('product.template')
         self.product = POOL.get('product.product')
-    
+
     def test0006depends(self):
         '''
         Test depends.
@@ -65,15 +65,15 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
                     }])
 
             with transaction.set_user(0):
-                price_list1 = self.price_list.create([{
+                price_list1, = self.price_list.create([{
                     'name': 'General Price List',
                     'company': company.id,
                     'lines': [
-                        ('create', [{
-                            'formula': 'product.cost_price*1.10',
-                        }],
-                    ),],
-                    }])[0]
+                                ('create', [{
+                                    'formula': 'product.cost_price * 1.10',
+                                }],
+                            )],
+                    }])
 
                 self.assert_(price_list1)
 
