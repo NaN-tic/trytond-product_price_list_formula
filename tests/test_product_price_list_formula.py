@@ -32,6 +32,7 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         self.category = POOL.get('product.category')
         self.template = POOL.get('product.template')
         self.product = POOL.get('product.product')
+        self.user = POOL.get('res.user')
 
     def test0006depends(self):
         '''
@@ -43,8 +44,13 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         '''
         Create Price List
         '''
-        with Transaction().start(DB_NAME, USER, context=CONTEXT) as transaction:
+        with Transaction().start(DB_NAME, USER, context=CONTEXT):
             company, = self.company.search([('rec_name', '=', 'B2CK')])
+            self.user.write([self.user(USER)], {
+                    'main_company': company.id,
+                    'company': company.id,
+                    })
+            CONTEXT.update(self.user.get_preferences(context_only=True))
 
             uom, = self.uom.search([
                     ('name', '=', 'Unit'),
@@ -64,20 +70,17 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
                     'template': template.id,
                     }])
 
-            with transaction.set_user(0):
-                price_list1, = self.price_list.create([{
-                    'name': 'General Price List',
-                    'company': company.id,
-                    'lines': [
-                                ('create', [{
-                                    'formula': 'product.cost_price * 1.10',
-                                }],
-                            )],
-                    }])
+            price_list1, = self.price_list.create([{
+                'name': 'General Price List',
+                'company': company.id,
+                'lines': [
+                            ('create', [{
+                                'formula': 'product.cost_price * 1.10',
+                            }],
+                        )],
+                }])
 
-                self.assert_(price_list1)
-
-            transaction.cursor.commit()
+            self.assert_(price_list1)
 
 
 def suite():
