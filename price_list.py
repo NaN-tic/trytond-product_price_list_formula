@@ -23,7 +23,7 @@ class PriceList:
     def _get_context_price_list_line(self, party, product, unit_price,
             quantity, uom):
         '''
-        Add party and product available in formula
+        Add party, product, quantity, uom and price_list available in formula
 
         :param party: the BrowseRecord of the party.party
         :param product: the BrowseRecord of the product.product
@@ -35,9 +35,10 @@ class PriceList:
         '''
         res = super(PriceList, self)._get_context_price_list_line(
             party, product, unit_price, quantity, uom)
-        res['product'] = product
         res['party'] = party
+        res['product'] = product
         res['quantity'] = quantity
+        res['uom'] = uom
         res['price_list'] = Pool().get('product.price_list')
         return res
 
