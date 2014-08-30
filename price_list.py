@@ -59,14 +59,13 @@ class PriceList:
         except:
             self.raise_user_error('not_found_price_list', price_list)
 
-        quantity = 0
         product = Transaction().context['product']
         return self.compute(
                         price_list,
-                        Transaction().context['customer'],
+                        Transaction().context['party'],
                         product,
                         Transaction().context['unit_price'],
-                        quantity,
+                        Transaction().context.get('quantity', 0.0),
                         Transaction().context.get('uom', product.default_uom))
 
 
