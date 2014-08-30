@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- This file is part of product_price_list_formula module for Tryton.
+The COPYRIGHT file at the top level of this repository contains the full
+copyright notices and license terms. -->
+<tryton>
+    <data>
+
+        <record model="ir.ui.view" id="price_list_line_view_tree_sequence">
+            <field name="model">product.price_list.line</field>
+            <field name="inherit" ref="product_price_list.price_list_line_view_tree_sequence"/>
+            <field name="name">price_list_line_tree_sequence</field>
+        </record>
+
+    </data>
+</tryton>
