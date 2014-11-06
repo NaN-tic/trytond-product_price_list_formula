@@ -1,27 +1,18 @@
 #!/usr/bin/env python
-#This file is part product_price_list_formula module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains
-#the full copyright notices and license terms.
-
-import sys
-import os
-DIR = os.path.abspath(os.path.normpath(os.path.join(__file__,
-    '..', '..', '..', '..', '..', 'trytond')))
-if os.path.isdir(DIR):
-    sys.path.insert(0, os.path.dirname(DIR))
-
+# This file is part product_price_list_formula module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 import unittest
 from decimal import Decimal
 
 import trytond.tests.test_tryton
-from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT, test_depends
+from trytond.tests.test_tryton import POOL, DB_NAME, USER, CONTEXT
+from trytond.tests.test_tryton import test_depends
 from trytond.transaction import Transaction
 
 
 class ProductPriceListFormulaTestCase(unittest.TestCase):
-    '''
-    Test Product Price List Formula module.
-    '''
+    'Test Product Price List Formula module'
 
     def setUp(self):
         trytond.tests.test_tryton.install_module('sale_price_list')
@@ -35,15 +26,11 @@ class ProductPriceListFormulaTestCase(unittest.TestCase):
         self.user = POOL.get('res.user')
 
     def test0006depends(self):
-        '''
-        Test depends.
-        '''
+        'Test depends'
         test_depends()
 
     def test0010price_list(self):
-        '''
-        Create Price List
-        '''
+        'Create Price List'
         with Transaction().start(DB_NAME, USER, context=CONTEXT):
             company, = self.company.search([
                     ('rec_name', '=', 'Dunder Mifflin')])
@@ -93,7 +80,3 @@ def suite():
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(
         ProductPriceListFormulaTestCase))
     return suite
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner(verbosity=2).run(suite())
