@@ -43,7 +43,7 @@ class PriceList:
             res['functions'] = {}
         res['functions']['getattr'] = getattr
         res['functions']['setattr'] = setattr
-        res['functions']['setattr'] = hasattr
+        res['functions']['hasattr'] = hasattr
         res['functions']['Decimal'] = Decimal
         res['functions']['round'] = round
         res['functions']['price_list'] = self.__class__.compute_price_list
