@@ -38,7 +38,6 @@ class PriceList:
         res['names']['product'] = product
         res['names']['quantity'] = quantity
         res['names']['uom'] = uom
-        #~ res['names']['price_list'] = self.__class__.compute_price_list()
         if not 'functions' in res:
             res['functions'] = {}
         res['functions']['getattr'] = getattr
