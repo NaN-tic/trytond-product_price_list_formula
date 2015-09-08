@@ -4,9 +4,7 @@
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 
-from decimal import Decimal
-
-__all__ = ['PriceList', 'PriceListLine']
+__all__ = ['PriceList']
 __metaclass__ = PoolMeta
 
 
@@ -20,94 +18,55 @@ class PriceList:
             'not_found_price_list': 'Not found price list: %s!',
         })
 
-    def _get_context_price_list_line(self, party, product, unit_price,
-            quantity, uom):
-        '''
-        Add party, product, quantity, uom and price_list available in formula
+    def get_context_formula(self, party, product, unit_price, quantity, uom):
+        pool = Pool()
+        Company = pool.get('company.company')
+        Product = pool.get('product.product')
 
-        :param party: the BrowseRecord of the party.party
-        :param product: the BrowseRecord of the product.product
-        :param unit_price: a Decimal for the default unit price in the
-            company's currency and default uom of the product
-        :param quantity: the quantity of product
-        :param uom: the BrowseRecord of the product.uom
-        :return: a dictionary
-        '''
-        res = super(PriceList, self)._get_context_price_list_line(
+        res = super(PriceList, self).get_context_formula(
             party, product, unit_price, quantity, uom)
-        res['party'] = party
-        res['product'] = product
-        res['quantity'] = quantity
-        res['uom'] = uom
-        res['price_list'] = Pool().get('product.price_list')
+
+        if not party:
+            company_id = Transaction().context.get('company')
+            party = Company(company_id)
+        if not product:
+            # maxim recursion Product(), search first product when is None
+            product, = Product.search([], limit=1)
+
+        res['names']['party'] = party
+        res['names']['product'] = product
+        res['names']['quantity'] = quantity
+        res['names']['uom'] = uom
+        #~ res['names']['price_list'] = self.__class__.compute_price_list()
+        if not 'functions' in res:
+            res['functions'] = {}
+        res['functions']['getattr'] = getattr
+        res['functions']['setattr'] = setattr
+        res['functions']['setattr'] = hasattr
+        res['functions']['price_list'] = self.__class__.compute_price_list
+
         return res
 
     @classmethod
-    def compute_price_list(self, price_list):
+    def compute_price_list(self, pricelist):
         '''
         Compute price based another price list
-
-        :param price_list: the price list id or the BrowseRecord of the
-            product.price_list
-        :return: the computed unit price
         '''
-        if isinstance(price_list, (int, long)):
-            price_list = self(price_list)
 
-        try:
-            price_list.name
-        except:
-            self.raise_user_error('not_found_price_list', price_list)
-
-        product = Transaction().context['product']
-        return self.compute(
-                        price_list,
-                        Transaction().context['party'],
-                        product,
-                        Transaction().context['unit_price'],
-                        Transaction().context.get('quantity', 0.0),
-                        Transaction().context.get('uom', product.default_uom))
-
-
-class PriceListLine:
-    __name__ = 'product.price_list.line'
-
-    @classmethod
-    def __setup__(cls):
-        super(PriceListLine, cls).__setup__()
-        cls._error_messages.update({
-                'add_product': ('Add a product before to create a price list'),
-                })
-
-    def check_formula(self):
-        '''
-        Check formula
-        Add new params test in context: product, customer and price list object
-        '''
-        pool = Pool()
-        PriceList = pool.get('product.price_list')
-        context = PriceList()._get_context_price_list_line(None, None,
-                Decimal('0.0'), 0, None)
-
-        products = pool.get('product.product').search([], limit=1)
-        if not products:
-            self.raise_user_error('add_product')
-        product = products[0]
-        context['product'] = pool.get('product.product')(product)
-        customer = pool.get('party.party').search([], limit=1)[0]
-        context['customer'] = pool.get('party.party')(customer)
-        context['price_list'] = pool.get('product.price_list')
-
-        with Transaction().set_context(**context):
+        price_list = None
+        if isinstance(pricelist, (int, long)):
             try:
-                if not isinstance(self.get_unit_price(), Decimal):
-                    self.raise_user_error('invalid_formula', {
-                            'formula': self.formula,
-                            'line': self.rec_name,
-                            })
-            except Exception:
-                self.raise_user_error('invalid_formula', {
-                        'formula': self.formula,
-                        'line': self.rec_name,
-                        })
-        return True
+                price_list = self(pricelist)
+            except:
+                pass
+
+        if not price_list:
+            self.raise_user_error('not_found_price_list', pricelist)
+
+        context = Transaction().context
+        return price_list.compute(
+                    context.get('party'),
+                    context.get('product'),
+                    context.get('unit_price'),
+                    context.get('quantity', 0),
+                    context.get('uom'))
