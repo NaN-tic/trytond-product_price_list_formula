@@ -25,7 +25,7 @@ Ejemplo de cálculos:
 
 * Una tarifa que dependa de otra tarifa (ID 3) y le añadimos un 10%:
 
-  ``price_list(3)*1.10``
+  ``compute_price_list(3)*1.10``
 
   Este ejemplo se basa la tarifa con identificador 3. En el caso de que no
   exista esta tarifa, un mensaje de aviso le informará que la tarifa no se
