@@ -17,13 +17,13 @@ Formula examples
 
 Add 10% cost price:
 
- product.cost_price*1.10
+ ``product.cost_price*1.10``
 
 Add 10% cost price and round 2 decimals:
 
- Decimal(round(product.cost_price*1.10,2))
+ ``Decimal(round(product.cost_price*1.10,2))``
 
 Price list from other price list (from price list ID 3) and add 10%:
 
- price_list.compute_price_list(3)*1.10
+ ``compute_price_list(3)*1.10``
 
