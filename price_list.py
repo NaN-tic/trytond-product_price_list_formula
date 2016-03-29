@@ -6,10 +6,10 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 
 __all__ = ['PriceList']
-__metaclass__ = PoolMeta
 
 
 class PriceList:
+    __metaclass__ = PoolMeta
     __name__ = 'product.price_list'
 
     @classmethod
