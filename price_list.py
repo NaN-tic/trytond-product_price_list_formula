@@ -24,6 +24,15 @@ class PriceList:
         Company = pool.get('company.company')
         Product = pool.get('product.product')
 
+        # set params context formula in Transaction context
+        # in case use compute_price_list
+        Transaction().context['pricelist'] = {
+            'party': party,
+            'product': product,
+            'unit_price': unit_price,
+            'quantity': quantity,
+            'uom': uom,
+            }
         res = super(PriceList, self).get_context_formula(
             party, product, unit_price, quantity, uom)
 
@@ -67,10 +76,11 @@ class PriceList:
         if not price_list:
             self.raise_user_error('not_found_price_list', pricelist)
 
-        context = Transaction().context
+        context = Transaction().context['pricelist']
         return price_list.compute(
-                    context.get('party'),
-                    context.get('product'),
-                    context.get('unit_price'),
-                    context.get('quantity', 0),
-                    context.get('uom'))
+                    context['party'],
+                    context['product'],
+                    context['unit_price'],
+                    context['quantity'],
+                    context['uom'],
+                    )
