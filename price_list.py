@@ -2,10 +2,11 @@
 #The COPYRIGHT file at the top level of this repository contains
 #the full copyright notices and license terms.
 from decimal import Decimal
+from trytond.model import fields
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 
-__all__ = ['PriceList']
+__all__ = ['PriceList', 'PriceListLine']
 
 
 class PriceList:
@@ -84,3 +85,17 @@ class PriceList:
                     context['quantity'],
                     context['uom'],
                     )
+
+    def compute(self, party, product, unit_price, quantity, uom, pattern=None):
+        if pattern is None:
+            pattern = {}
+        if product and product.categories:
+            pattern['category'] = (product.categories[0].id)
+        return super(PriceList, self).compute(party, product, unit_price,
+            quantity, uom, pattern)
+
+
+class PriceListLine:
+    __metaclass__ = PoolMeta
+    __name__ = 'product.price_list.line'
+    category = fields.Many2One('product.category', 'Category')
