@@ -7,4 +7,5 @@ from .price_list import *
 def register():
     Pool.register(
         PriceList,
+        PriceListLine,
         module='product_price_list_formula', type_='model')
