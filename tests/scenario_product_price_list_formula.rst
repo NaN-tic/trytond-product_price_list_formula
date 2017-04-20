@@ -7,6 +7,7 @@ Imports::
     >>> import datetime
     >>> from decimal import Decimal
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
@@ -14,22 +15,9 @@ Imports::
     >>> from trytond.modules.account_invoice.tests.tools import \
     ...     set_fiscalyear_invoice_sequences, create_payment_term
 
-Create database::
-
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install sale_price_list::
-
-    >>> Module = Model.get('ir.module')
-    >>> module, = Module.find([('name', '=', 'sale_price_list')])
-    >>> module.click('install')
-
 Install product_price_list_formula::
 
-    >>> module, = Module.find([('name', '=', 'product_price_list_formula')])
-    >>> module.click('install')
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules(['product_price_list_formula', 'sale_price_list'])
 
 Create company::
 
