@@ -65,7 +65,6 @@ Create product::
     >>> unit, = ProductUom.find([('name', '=', 'Unit')])
     >>> ProductTemplate = Model.get('product.template')
     >>> Product = Model.get('product.product')
-    >>> product = Product()
     >>> template = ProductTemplate()
     >>> template.name = 'product'
     >>> template.default_uom = unit
@@ -77,9 +76,10 @@ Create product::
     >>> template.cost_price_method = 'fixed'
     >>> template.account_expense = expense
     >>> template.account_revenue = revenue
+    >>> product, = template.products
+    >>> product.cost_price = Decimal('57.3434')
     >>> template.save()
-    >>> product.template = template
-    >>> product.save()
+    >>> product, = template.products
 
 Create payment term::
 

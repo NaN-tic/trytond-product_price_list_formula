@@ -6,7 +6,7 @@ from trytond.model import fields
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 
-__all__ = ['PriceList', 'PriceListLine']
+__all__ = ['PriceList']
 
 
 class PriceList:
@@ -93,9 +93,3 @@ class PriceList:
             pattern['category'] = (product.categories[0].id)
         return super(PriceList, self).compute(party, product, unit_price,
             quantity, uom, pattern)
-
-
-class PriceListLine:
-    __metaclass__ = PoolMeta
-    __name__ = 'product.price_list.line'
-    category = fields.Many2One('product.category', 'Category')
