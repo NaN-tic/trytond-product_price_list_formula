@@ -1,8 +1,7 @@
-#This file is part product_price_list_formula module for Tryton.
-#The COPYRIGHT file at the top level of this repository contains
-#the full copyright notices and license terms.
+# This file is part product_price_list_formula module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from decimal import Decimal
-from trytond.model import fields
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
 
@@ -43,14 +42,14 @@ class PriceList:
         if not product:
             # maxim recursion Product(), search first product when is None
             product, = Product.search([], limit=1)
-            product.special_price = Decimal(0) # product special price
-            product.list_price_supplier = Decimal(0) # product supplier price
+            product.special_price = Decimal(0)  # product special price
+            product.list_price_supplier = Decimal(0)  # product supplier price
 
         res['names']['party'] = party
         res['names']['product'] = product
         res['names']['quantity'] = quantity
         res['names']['uom'] = uom
-        if not 'functions' in res:
+        if 'functions' not in res:
             res['functions'] = {}
         res['functions']['getattr'] = getattr
         res['functions']['setattr'] = setattr
