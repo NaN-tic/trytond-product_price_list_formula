@@ -8,8 +8,7 @@ from trytond.pool import Pool, PoolMeta
 __all__ = ['PriceList']
 
 
-class PriceList:
-    __metaclass__ = PoolMeta
+class PriceList(metaclass=PoolMeta):
     __name__ = 'product.price_list'
 
     @classmethod
@@ -68,7 +67,7 @@ class PriceList:
         '''
 
         price_list = None
-        if isinstance(pricelist, (int, long)):
+        if isinstance(pricelist, int):
             try:
                 price_list = self(pricelist)
             except:
