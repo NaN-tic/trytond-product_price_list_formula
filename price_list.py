@@ -19,7 +19,8 @@ class PriceList:
             'not_found_price_list': 'Not found price list: %s!',
         })
 
-    def get_context_formula(self, party, product, unit_price, quantity, uom):
+    def get_context_formula(self, party, product, unit_price, quantity, uom,
+            pattern=None):
         pool = Pool()
         Company = pool.get('company.company')
         Product = pool.get('product.product')
@@ -34,7 +35,7 @@ class PriceList:
             'uom': uom,
             }
         res = super(PriceList, self).get_context_formula(
-            party, product, unit_price, quantity, uom)
+            party, product, unit_price, quantity, uom, pattern=pattern)
 
         if not party:
             company_id = Transaction().context.get('company')
