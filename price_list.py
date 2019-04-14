@@ -4,19 +4,14 @@
 from decimal import Decimal
 from trytond.transaction import Transaction
 from trytond.pool import Pool, PoolMeta
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 __all__ = ['PriceList']
 
 
 class PriceList(metaclass=PoolMeta):
     __name__ = 'product.price_list'
-
-    @classmethod
-    def __setup__(cls):
-        super(PriceList, cls).__setup__()
-        cls._error_messages.update({
-            'not_found_price_list': 'Not found price list: %s!',
-        })
 
     def get_context_formula(self, party, product, unit_price, quantity, uom,
             pattern=None):
@@ -74,7 +69,9 @@ class PriceList(metaclass=PoolMeta):
                 pass
 
         if not price_list:
-            self.raise_user_error('not_found_price_list', pricelist)
+            raise UserError(gettext(
+                'product_price_list_formula.not_found_price_list',
+                    priceList=pricelist))
 
         context = Transaction().context['pricelist']
         return price_list.compute(
