@@ -37,8 +37,8 @@ class PriceList(metaclass=PoolMeta):
         if not product:
             # maxim recursion Product(), search first product when is None
             product, = Product.search([], limit=1)
-            product.special_price = Decimal(0)  # product special price
-            product.list_price_supplier = Decimal(0)  # product supplier price
+            if hasattr(product, 'special_price'):
+                product.special_price = Decimal(0)  # product special price
 
         res['names']['party'] = party
         res['names']['product'] = product
