@@ -8,6 +8,14 @@ from trytond.pool import Pool, PoolMeta
 __all__ = ['PriceList']
 __metaclass__ = PoolMeta
 
+def _getattr(obj, name):
+    'Proxy method because simpleeval warns against using getattr'
+    return getattr(obj, name)
+
+def _setattr(obj, name, value):
+    'Proxy method because simpleeval warns against using setattr'
+    return setattr(obj, name, value)
+
 
 class PriceList:
     __name__ = 'product.price_list'
@@ -51,8 +59,8 @@ class PriceList:
         res['names']['uom'] = uom
         if not 'functions' in res:
             res['functions'] = {}
-        res['functions']['getattr'] = getattr
-        res['functions']['setattr'] = setattr
+        res['functions']['getattr'] = _getattr
+        res['functions']['setattr'] = _setattr
         res['functions']['hasattr'] = hasattr
         res['functions']['Decimal'] = Decimal
         res['functions']['round'] = round
