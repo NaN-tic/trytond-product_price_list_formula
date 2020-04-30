@@ -17,11 +17,15 @@ Ejemplo de cálculos:
 
 * Añadir un 10% al precio de coste:
 
-  ``getattr(product, 'cost_price')*1.10``
+  ``product.cost_price*1.10``
+
+* Precio de venta:
+
+  ``product.list_price_used``
 
 * Añadir un 10% al precio de coste y redondeo a 2 decimales:
 
-  ``Decimal(round(getattr(product, 'cost_price')*1.10,2))``
+  ``Decimal(round(product.cost_price*1.10,2))``
 
 * Una tarifa que dependa de otra tarifa (ID 3) y le añadimos un 10%:
 
