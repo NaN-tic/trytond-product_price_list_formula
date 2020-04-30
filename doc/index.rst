@@ -19,6 +19,10 @@ Add 10% cost price:
 
  ``product.cost_price*1.10``
 
+Price List:
+
+  ``product.list_price_used``
+
 Add 10% cost price and round 2 decimals:
 
  ``Decimal(round(product.cost_price*1.10,2))``
@@ -26,4 +30,3 @@ Add 10% cost price and round 2 decimals:
 Price list from other price list (from price list ID 3) and add 10%:
 
  ``compute_price_list(3)*1.10``
-
