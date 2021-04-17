@@ -7,8 +7,6 @@ from trytond.pool import Pool, PoolMeta
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 
-__all__ = ['PriceList']
-
 def _getattr(obj, name):
     'Proxy method because simpleeval warns against using getattr'
     return getattr(obj, name)
@@ -16,6 +14,11 @@ def _getattr(obj, name):
 def _setattr(obj, name, value):
     'Proxy method because simpleeval warns against using setattr'
     return setattr(obj, name, value)
+
+def simpleeval_round(value, ndigits=None):
+    'round() wrapper that accepts Decimal in ndigits parameter. '
+    'decistmt() used by product_price_list converts integers to floats'
+    return round(value, None if ndigits is None else int(ndigits))
 
 
 class PriceList(metaclass=PoolMeta):
@@ -58,7 +61,7 @@ class PriceList(metaclass=PoolMeta):
         res['functions']['setattr'] = _setattr
         res['functions']['hasattr'] = hasattr
         res['functions']['Decimal'] = Decimal
-        res['functions']['round'] = round
+        res['functions']['round'] = simpleeval_round
         res['functions']['compute_price_list'] = self.compute_price_list
 
         return res
@@ -70,9 +73,11 @@ class PriceList(metaclass=PoolMeta):
         '''
 
         price_list = None
-        if isinstance(pricelist, int):
+        if not isinstance(pricelist, self.__class__):
+            # Use int() because decistmt() used by product_price_list
+            # converts integers to Decimal
             try:
-                price_list = self(pricelist)
+                price_list = self(int(pricelist))
             except:
                 pass
 
