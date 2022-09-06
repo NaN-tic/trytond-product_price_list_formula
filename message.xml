@@ -6,5 +6,8 @@ this repository contains the full copyright notices and license terms. -->
       <record model="ir.message" id="not_found_price_list">
           <field name="text">Not found price list: %(pricelist)s!</field>
       </record>
+      <record model="ir.message" id="msg_error_compute_price_list">
+          <field name="text">Error compute price list: %(error)s</field>
+      </record>
     </data>
 </tryton>
