@@ -87,13 +87,14 @@ class PriceList(metaclass=PoolMeta):
                     priceList=pricelist))
 
         context = Transaction().context['pricelist']
-        return price_list.compute(
+        value = price_list.compute(
                     context['party'],
                     context['product'],
                     context['unit_price'],
                     context['quantity'],
                     context['uom'],
                     )
+        return value or Decimal(0)
 
     def compute(self, party, product, unit_price, quantity, uom, pattern=None):
         if pattern is None:
@@ -102,15 +103,3 @@ class PriceList(metaclass=PoolMeta):
             pattern['category'] = (product.categories[0].id)
         return super(PriceList, self).compute(party, product, unit_price,
             quantity, uom, pattern)
-
-
-class PriceListLine(metaclass=PoolMeta):
-    __name__ = 'product.price_list.line'
-
-    def get_unit_price(self, **context):
-        try:
-            return super(PriceListLine, self).get_unit_price(**context)
-        except TypeError as error:
-            raise UserError(gettext(
-                'product_price_list_formula.msg_error_compute_price_list',
-                    error=error))
