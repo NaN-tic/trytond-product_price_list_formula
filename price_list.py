@@ -87,13 +87,14 @@ class PriceList(metaclass=PoolMeta):
                     priceList=pricelist))
 
         context = Transaction().context['pricelist']
-        return price_list.compute(
+        value = price_list.compute(
                     context['party'],
                     context['product'],
                     context['unit_price'],
                     context['quantity'],
                     context['uom'],
                     )
+        return value or Decimal(0)
 
     def compute(self, party, product, unit_price, quantity, uom, pattern=None):
         if pattern is None:
