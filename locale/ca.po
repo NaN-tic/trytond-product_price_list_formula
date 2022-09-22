@@ -4,4 +4,4 @@ msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "model:ir.message,text:not_found_price_list"
 msgid "Not found price list: %(pricelist)s!"
-msgstr ""
+msgstr "No s'ha trobat la tarifa: %(pricelist)s!"
