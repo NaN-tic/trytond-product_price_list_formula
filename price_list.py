@@ -96,11 +96,3 @@ class PriceList(metaclass=PoolMeta):
                     context['uom'],
                     )
         return value or Decimal(0)
-
-    def compute(self, party, product, unit_price, quantity, uom, pattern=None):
-        if pattern is None:
-            pattern = {}
-        if product and product.categories:
-            pattern['category'] = (product.categories[0].id)
-        return super(PriceList, self).compute(party, product, unit_price,
-            quantity, uom, pattern)
