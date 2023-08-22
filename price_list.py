@@ -24,35 +24,27 @@ def simpleeval_round(value, ndigits=None):
 class PriceList(metaclass=PoolMeta):
     __name__ = 'product.price_list'
 
-    def get_context_formula(self, party, product, unit_price, quantity, uom,
-            pattern=None):
+    def get_context_formula(self, product, quantity, uom, pattern=None):
         pool = Pool()
-        Company = pool.get('company.company')
         Product = pool.get('product.product')
 
         # set params context formula in Transaction context
         # in case use compute_price_list
         price_list_context = {
-            'party': party,
             'product': product,
-            'unit_price': unit_price,
             'quantity': quantity,
             'uom': uom,
             }
         Transaction().set_context(pricelist=price_list_context)
         res = super(PriceList, self).get_context_formula(
-            party, product, unit_price, quantity, uom, pattern=pattern)
+            product, quantity, uom, pattern)
 
-        if not party:
-            company_id = Transaction().context.get('company')
-            party = Company(company_id)
         if not product:
             # maxim recursion Product(), search first product when is None
             product, = Product.search([], limit=1)
             if hasattr(product, 'special_price'):
                 product.special_price = Decimal(0)  # product special price
 
-        res['names']['party'] = party
         res['names']['product'] = product
         res['names']['quantity'] = quantity
         res['names']['uom'] = uom
@@ -89,9 +81,7 @@ class PriceList(metaclass=PoolMeta):
 
         context = Transaction().context['pricelist']
         value = price_list.compute(
-                    context['party'],
                     context['product'],
-                    context['unit_price'],
                     context['quantity'],
                     context['uom'],
                     )
