@@ -31,9 +31,9 @@ class PriceList(metaclass=PoolMeta):
         # set params context formula in Transaction context
         # in case use compute_price_list
         price_list_context = {
-            'product': product,
+            'product': product and product.id,
             'quantity': quantity,
-            'uom': uom,
+            'uom': uom and uom.id,
             }
         Transaction().set_context(pricelist=price_list_context)
         res = super(PriceList, self).get_context_formula(
@@ -64,6 +64,9 @@ class PriceList(metaclass=PoolMeta):
         '''
         Compute price based another price list
         '''
+        pool = Pool()
+        Product = pool.get('product.product')
+        Uom = pool.get('product.uom')
 
         price_list = None
         if not isinstance(pricelist, self.__class__):
@@ -79,10 +82,14 @@ class PriceList(metaclass=PoolMeta):
                 'product_price_list_formula.not_found_price_list',
                     priceList=pricelist))
 
-        context = Transaction().context['pricelist']
+        context = Transaction().context.get('pricelist', {})
+        product_id = context.get('product')
+        quantity = context.get('quantity')
+        uom_id = context.get('uom')
+
         value = price_list.compute(
-                    context['product'],
-                    context['quantity'],
-                    context['uom'],
+                    Product(product_id) if product_id else None,
+                    quantity,
+                    Uom(uom_id) if uom_id else None,
                     )
         return value or Decimal(0)
